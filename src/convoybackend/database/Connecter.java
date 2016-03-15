@@ -20,21 +20,30 @@ public class Connecter {
     
     private final String
             server      = "mysql.carlend.net",  // database-serveren
-            database    = "carlend_net_db",  //"jdbcdatabase", // navnet paa din database = dit studienummer
-            username    = "carlend_net", // brugernavn
-            password    = "carlend"; // password til databasen
+            database    = "carlend_net_db";  //"jdbcdatabase", // navnet paa din database = dit studienummer
+//            username    = "", // brugernavn
+//            password    = ""; // password til databasen
     
     public final String tabelNavn   = "convoy_db"; // tabelnavn i databasen som indeholder data
     
     private final int port = 3306;
-    private final Connection conn;
-    private final Statement stm;
+    private Connection conn;
+    private Statement stm;
     
-    public Connecter() throws InstantiationException, IllegalAccessException,
-            ClassNotFoundException, SQLException {
+    /**
+     * 
+     * @param username Brugernavn til databasen
+     * @param password Password til databasen
+     * @return True hvis forbindelsen er oprettet korrekt
+     * @throws SQLException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws ClassNotFoundException 
+     */
+    public boolean connect(String username, String password) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException{
         conn	= this.connectToDatabase("jdbc:mysql://"+server+":"+port+"/"+database, username, password);
         stm	= conn.createStatement();
-        this.isConnected();
+        return this.isConnected();
     }
     
     private Connection connectToDatabase(String url, String username, String password)
@@ -47,17 +56,19 @@ public class Connecter {
         return (Connection) DriverManager.getConnection(url, username, password);
     }
     
-    private void isConnected(){
+    private boolean isConnected(){
         try {
             ResultSet rs = this.doQuery("SELECT * from " + tabelNavn);
             if(rs.next()){
                 System.out.println("Forbindelse til database er oprettet. Tabel: " + tabelNavn + " indeholder data.");
+                return true;
             } else {
                 throw new SQLException();
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             System.err.println("Forbindelse til databasen fejlede.");
+            return false;
         }
     }
     
