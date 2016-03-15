@@ -3,12 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package convoybackendrmi;
+package convoybackend.soap;
 
 /**
  *
  * @author ministeren
  */
-public class ConvoyBackendRmi {
+public class ConvoyBackendSoap {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // TODO code application logic here
+    }
     
 }
