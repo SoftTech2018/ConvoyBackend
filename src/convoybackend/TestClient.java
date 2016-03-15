@@ -7,7 +7,6 @@ package convoybackend;
 
 import convoybackend.soap.SoapInt;
 import java.net.URL;
-import java.util.Scanner;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
