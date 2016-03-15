@@ -27,8 +27,8 @@ public class Connecter {
     public final String tabelNavn   = "convoy_db"; // tabelnavn i databasen som indeholder data
     
     private final int port = 3306;
-    private Connection conn;
-    private Statement stm;
+    private final Connection conn;
+    private final Statement stm;
     
     public Connecter() throws InstantiationException, IllegalAccessException,
             ClassNotFoundException, SQLException {
