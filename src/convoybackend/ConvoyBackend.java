@@ -5,6 +5,7 @@
  */
 package convoybackend;
 
+import convoybackend.soap.ConvoyBackendSoap;
 import convoybackend.soap.SoapImpl;
 import java.io.IOException;
 import javax.xml.ws.Endpoint;
@@ -16,12 +17,7 @@ import javax.xml.ws.Endpoint;
 public class ConvoyBackend {
     public static void main(String[] arg) throws IOException{
         
-        System.out.println("Publicerer tjenester");
-        SoapImpl soapserv = new SoapImpl();
+        new ConvoyBackendSoap();
         
-// Ipv6-addressen [::] svarer til Ipv4-adressen 0.0.0.0, der matcher alle maskinens netkort og
-//        Endpoint.publish("http://[::]:9943/convoyjeneste", soapserv);
-        Endpoint.publish("http://localhost:9943/convoyjeneste", soapserv);
-        System.out.println("Tjenester publiceret");
     }
 }
