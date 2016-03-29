@@ -25,7 +25,7 @@ public class SpotsDAO {
     /**
      * Henter alle spots i databasen
      * @return Alle spots der findes i DB
-     * @throws SQLException 
+     * @throws SQLException
      */
     public ArrayList<Spot> getSpots() throws SQLException{
         ArrayList<Spot> spots = new ArrayList<>();
@@ -42,7 +42,7 @@ public class SpotsDAO {
      * Opret et givent spot
      * @param spot Det spot der skal oprettes. Spottets ID skal være null.
      * @return True hvis spottet blev oprettet. False hvis det ikke blev oprettet.
-     * @throws SQLException 
+     * @throws SQLException
      */
     public boolean createSpot(Spot spot) throws SQLException{
         String cmd = "";
@@ -70,7 +70,7 @@ public class SpotsDAO {
      * Slet et givent spot
      * @param spot Det spot der skal slettes. Spottets ID bestemmer hvilket spot der slettes i DB
      * @return True hvis et spot blev slettet. False hvis intet blev slettet
-     * @throws SQLException 
+     * @throws SQLException
      */
     public boolean deleteSpot(Spot spot) throws SQLException{
         String cmd = "";
@@ -80,4 +80,20 @@ public class SpotsDAO {
         return true;
     }
     
+    /**
+     * Hent alle spots der er opdateret siden den defineret tid
+     * @param time Tiden siden 01.01.1970 i ms
+     * @return
+     * @throws SQLException 
+     */
+    public ArrayList<Spot> getUpdatedSpots(long time) throws SQLException{
+        ArrayList<Spot> spots = new ArrayList<>();
+        
+        ResultSet rs = con.doQuery("SELECT * from " + con.tabelNavn + " WHERE lastUpdated >= " + time);
+        while (rs.next()) {
+            spots.add(new Spot());
+//            UserDTO(Integer.toString(rs.getInt("opr_id")), rs.getString("opr_navn"), rs.getString("ini"), rs.getString("cpr"), rs.getString("password"), rs.getBoolean("admin"), rs.getBoolean("farmaceut"), rs.getBoolean("varkforer"), rs.getBoolean("operatoer"))
+        }
+        return spots;
+    }
 }
