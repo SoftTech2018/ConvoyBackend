@@ -12,15 +12,15 @@ Klassen funger som Data Transfer Objekt (DTO) for spots.
 */
 public class Spot implements Serializable {
     
-    private boolean addBlue, food, wc, bed, bath, fuel, roadtrain;
-    private float longitude, latitude;
+    private boolean addBlue, food, wc, bed, bath, fuel, roadtrain, deleted;
+    private double longitude, latitude;
     private String name;
     private long lastUpdated;
     private int id;
     
     public Spot(){}
     
-    public Spot(int id, boolean addBlue, boolean food, boolean wc, boolean bed, boolean bath, boolean roadtrain, float longitude, float latitude, String name, long lastUpdated){
+    public Spot(int id, boolean addBlue, boolean food, boolean wc, boolean bed, boolean bath, boolean roadtrain, double longitude, double latitude, String name, long lastUpdated, boolean deleted){
         this.id = id;
         this. addBlue = addBlue;
         this.food = food;
@@ -31,6 +31,15 @@ public class Spot implements Serializable {
         this.longitude = longitude;
         this.latitude = latitude;
         this.lastUpdated = lastUpdated;
+        this.deleted = deleted;
+    }
+    
+    public boolean isDeleted(){
+        return deleted;
+    }
+    
+    public void setDeleted(boolean deleted){
+        this.deleted = deleted;
     }
     
     public void setLastUpdated(long lastUpdated){
@@ -105,19 +114,19 @@ public class Spot implements Serializable {
         this.roadtrain = roadtrain;
     }
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public float getLatidude() {
+    public double getLatidude() {
         return latitude;
     }
 
-    public void setLatidude(float latidude) {
+    public void setLatidude(double latidude) {
         this.latitude = latidude;
     }
 

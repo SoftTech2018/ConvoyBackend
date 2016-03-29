@@ -29,12 +29,10 @@ public class SpotsDAO {
      */
     public ArrayList<Spot> getSpots() throws SQLException{
         ArrayList<Spot> spots = new ArrayList<>();
-        
         ResultSet rs = con.doQuery("SELECT * from " + con.tabelNavn);
         while (rs.next()) {
-            spots.add(new Spot());
-//            UserDTO(Integer.toString(rs.getInt("opr_id")), rs.getString("opr_navn"), rs.getString("ini"), rs.getString("cpr"), rs.getString("password"), rs.getBoolean("admin"), rs.getBoolean("farmaceut"), rs.getBoolean("varkforer"), rs.getBoolean("operatoer"))
-        }
+            spots.add(new Spot(rs.getInt("id"), rs.getBoolean("adblue"), rs.getBoolean("food"), rs.getBoolean("wc"), rs.getBoolean("bed"), rs.getBoolean("bath"), rs.getBoolean("roadtrain"), Double.parseDouble(rs.getString("posLng")), Double.parseDouble(rs.getString("posLat")), rs.getString("description"), rs.getLong("lastUpdated"), rs.getBoolean("deleted")));
+        }      
         return spots;
     }
     
@@ -45,7 +43,22 @@ public class SpotsDAO {
      * @throws SQLException
      */
     public boolean createSpot(Spot spot) throws SQLException{
-        String cmd = "";
+        long time = System.currentTimeMillis();
+        String cmd = "INSERT INTO " + con.tabelNavn +
+                " (adblue, bath, bed, food, fuel, roadtrain, wc, description, posLat, posLng, lastUpdated, deleted)" +
+                " VALUES (" + spot.isAddBlue() +
+                ", " + spot.isBed() +
+                ", " + spot.isFood() +
+                ", " + spot.isFuel() +
+                ", " + spot.isRoadtrain() +
+                ", " + spot.isWc() +
+                ", " + spot.getName() +
+                ", " + spot.getLatidude() +
+                ", " + spot.getLongitude() +
+                ", " + time +
+                ", " + false +
+                ")";
+        
         if(con.doUpdate(cmd) == 0 ){
             return false;
         }
@@ -59,7 +72,20 @@ public class SpotsDAO {
      * @throws SQLException
      */
     public boolean updateSpot(Spot spot) throws SQLException{
-        String cmd = "";
+        String cmd = "UPDATE " + con.tabelNavn + 
+                " SET adblue = " + spot.isAddBlue() + 
+                ", SET bath = " + spot.isBath() +
+                ", SET bed = " + spot.isBed() +
+                ", SET food = " + spot.isBed() + 
+                ", SET fuel = " + spot.isFuel() + 
+                ", SET roadtrain = " + spot.isRoadtrain() +
+                ", SET wc = " + spot.isWc() +
+                ", SET description = " + spot.getName() +
+                ", SET posLat = " + spot.getLatidude() +
+                ", SET posLng = " + spot.getLongitude() + 
+                ", SET lastUpdated = " + System.currentTimeMillis() +
+                ", SET deleted = " + spot.isDeleted() +
+                " WHERE id = " + spot.getId();
         if (con.doUpdate(cmd) ==0 ){
             return false;
         }
@@ -73,7 +99,10 @@ public class SpotsDAO {
      * @throws SQLException
      */
     public boolean deleteSpot(Spot spot) throws SQLException{
-        String cmd = "";
+        String cmd = "UPDATE " + con.tabelNavn + 
+                " SET deleted = " + true + 
+                " SET lastUpdated = " + System.currentTimeMillis() +
+                " WHERE id = " + spot.getId();
         if (con.doUpdate(cmd) ==0 ){
             return false;
         }
@@ -91,9 +120,8 @@ public class SpotsDAO {
         
         ResultSet rs = con.doQuery("SELECT * from " + con.tabelNavn + " WHERE lastUpdated >= " + time);
         while (rs.next()) {
-            spots.add(new Spot());
-//            UserDTO(Integer.toString(rs.getInt("opr_id")), rs.getString("opr_navn"), rs.getString("ini"), rs.getString("cpr"), rs.getString("password"), rs.getBoolean("admin"), rs.getBoolean("farmaceut"), rs.getBoolean("varkforer"), rs.getBoolean("operatoer"))
-        }
+            spots.add(new Spot(rs.getInt("id"), rs.getBoolean("adblue"), rs.getBoolean("food"), rs.getBoolean("wc"), rs.getBoolean("bed"), rs.getBoolean("bath"), rs.getBoolean("roadtrain"), Double.parseDouble(rs.getString("posLng")), Double.parseDouble(rs.getString("posLat")), rs.getString("description"), rs.getLong("lastUpdated"), rs.getBoolean("deleted")));
+        }   
         return spots;
     }
 }
