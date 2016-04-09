@@ -30,24 +30,31 @@ public class TestClient {
     public static void main(String[] args) throws Exception {
         
         
-        URL urlSoap = new URL("http://localhost:9943/convoyjeneste?wsdl");
-        QName qnameSoap = new QName("http://soap.convoybackend/", "SoapImplService");
-        Service soapService = Service.create(urlSoap, qnameSoap);
-        SoapInt soapserv = soapService.getPort(SoapInt.class);
-        
-        System.out.println(soapserv.Hent("test"));
+//        URL urlSoap = new URL("http://localhost:9943/convoyjeneste?wsdl");
+//        QName qnameSoap = new QName("http://soap.convoybackend/", "SoapImplService");
+//        Service soapService = Service.create(urlSoap, qnameSoap);
+//        SoapInt soapserv = soapService.getPort(SoapInt.class);
+//        
+//        System.out.println(soapserv.Hent("test"));
         
         /*
         Jons testkode
         */
-//        TestClient testClient = new TestClient();
-//        HashMap<String, String> params = new HashMap<>();
-//        for(int i=0; i<10; i++){
-//            params.put("testKey" + i, "testValue" + i);
-//        }
-//        String url = "http://localhost:8080";
-//        String response = testClient.performPostCall(url, params);
-//        System.out.println(response);
+        TestClient testClient = new TestClient();
+        HashMap<String, String> params = new HashMap<>();
+        params.put("id", "99");
+        params.put("userId", "1");
+        params.put("title", "This is the title");
+        params.put("body", "This is the body");
+        String url = "http://localhost:8080";
+        String url2 = "https://httpbin.org/post";
+        String response = testClient.performPostCall(url2, params);
+        String[] lines = response.split(",");
+        System.out.println("**** Udskriver svar: *****");
+        for (String line : lines) {
+            System.out.println(line + ",");
+        }
+        System.out.println("**** Svar slut ****");
     }
     
     /**
@@ -63,8 +70,8 @@ public class TestClient {
             url = new URL(requestURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
-//            conn.setDoInput(true);
-//            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
 
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
