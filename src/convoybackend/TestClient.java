@@ -8,6 +8,8 @@ package convoybackend;
 import convoybackend.soap.SoapInt;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -20,6 +22,10 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -48,6 +54,9 @@ public class TestClient {
         params.put("body", "This is the body");
         String url = "http://localhost:8080";
         String url2 = "https://httpbin.org/post";
+        String url3 = "https://httpbin.org/get";
+        
+        // Test af POST metode (Android)
         String response = testClient.performPostCall(url2, params);
         String[] lines = response.split(",");
         System.out.println("**** Udskriver svar: *****");
@@ -55,10 +64,28 @@ public class TestClient {
             System.out.println(line + ",");
         }
         System.out.println("**** Svar slut ****");
+        
+        // Test af GET metode vha. Jersey Client
+        String response2 = testClient.performGetCall(url3, System.currentTimeMillis());
+        String[] lines2 = response2.split(",");
+        System.out.println("**** Udskriver svar2: *****");
+        for (String line : lines2) {
+            System.out.println(line + ",");
+        }
+        System.out.println("**** Svar slut ****");
+        
+        // Test af GET metode til android
+        String response3 = testClient.performGetCallAndroid(url3, System.currentTimeMillis());
+        String[] lines3 = response3.split(",");
+        System.out.println("**** Udskriver svar3 (Android): *****");
+        for (String line : lines3) {
+            System.out.println(line + ",");
+        }
+        System.out.println("**** Svar slut ****");
     }
     
     /**
-     * Test af POST metode til REST server
+     * Test af POST/PUT metode til REST server
      * @param requestURL Url til REST server
      * @param postDataParams
      * @return 
@@ -113,5 +140,52 @@ public class TestClient {
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
         return result.toString();
+    }
+    
+    /**
+     * Udfører et GET kald til en REST server
+     * @param url URL til REST server
+     * @param lastUpdated long - hvornår er spots sidst blevet opdateret for klienten?
+     * @return 
+     */
+    private String performGetCall(String url, long lastUpdated){
+        //Instantierer en client
+        Client client = ClientBuilder.newClient();
+        //Kalder GET - get() på target og accepterer JSON
+        Response res = client.target(url).queryParam("lastUpdated", Long.toString(lastUpdated)).request().get();
+        //Parse resultatet til en String
+        String resultString = res.readEntity(String.class);
+        return resultString;
+    }
+    
+    private String performGetCallAndroid(String urlString, long lastUpdated){
+        String data = "";
+                InputStream iStream = null;
+                HttpURLConnection urlConnection = null;
+                try {
+                    try {
+                        URL url = new URL(urlString + "?lastUpdated=" + Long.toString(lastUpdated));
+                        urlConnection = (HttpURLConnection) url.openConnection();
+                        urlConnection.connect();
+                        iStream = urlConnection.getInputStream();
+                        BufferedReader br = new BufferedReader(new InputStreamReader(
+                                iStream));
+                        StringBuffer sb = new StringBuffer();
+                        String line = "";
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line);
+                        }
+                        data = sb.toString();
+                        br.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        iStream.close();
+                        urlConnection.disconnect();
+                    }
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+                return data;
     }
 }
